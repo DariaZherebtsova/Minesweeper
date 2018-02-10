@@ -30,6 +30,10 @@ TD.near3.open {
     background-image: url(../img/3.png);
 }
 
+TD.near4.open {
+	background-image: url(../img/4.png);
+}
+
 TD.bomb.open {
     background-image: url(../img/bomb.jpeg);
 }

@@ -1,6 +1,6 @@
 //игра Сапер
 //Жеребцова Дарья
-
+"use_strict"
 
 	//создаем двумерный массив - игровое поле
 	var n = 4, m = 4;	
@@ -13,10 +13,50 @@
 	}}
 	
 	//количество бомб
-	let num_bombs = 2;
+	let num_bombs = 4;
+    let arr_bombs = [];
 	//раставляем бомбы
-	field[1][1] = 9;
-	field[2][2] = 9;
+    function randomInteger(min, max) {
+        var rand = min - 0.5 + Math.random() * (max - min + 1);
+        rand = Math.abs(Math.round(rand)); //бывает -0 по-этому модуль
+        return rand;
+    }
+
+    function identicalCoord(obj1, obj2) {
+        if ((obj1.x === obj2.x) && (obj1.y === obj2.y)) {
+            return true;
+        }
+    }
+
+    function duplicateInArr(new_elem, arr) {
+        for (item of arr) {
+            if (identicalCoord(new_elem, item)) {
+            //такой уже есть
+                return true;
+            }
+        }
+    }
+
+    for (let i=0; i<num_bombs; i++ ) {
+        let bomb_x = randomInteger(0, 3);
+        let bomb_y = randomInteger(0, 3);
+        console.log("bomb_x", bomb_x);
+        console.log("bomb_y", bomb_y);
+        let coordBomb = {
+            x: bomb_x,
+            y: bomb_y
+        };
+        //проверяем что с такими координатами еще нет
+        if (!duplicateInArr(coordBomb, arr_bombs)) {
+            arr_bombs.push(coordBomb);
+            field[bomb_x][bomb_y] = 9;
+        } else {
+            //с такими координатами уже есть
+            // повторим этот шаг цикла
+            i--;
+        }
+    }
+    console.log(arr_bombs);
 	
 	//cчетчик флажков
 	let num_flags = 0;
@@ -29,15 +69,31 @@
 			//ели бомба
 	        if (field[i][j] > 8) {
 				//ставим +1 вокруг него
-				field[i-1][j-1] += 1;
-				field[i-1][j] += 1;
-				field[i-1][j+1] += 1;
-				field[i][j-1] += 1;
-				//field[i][j] += 1;
-				field[i][j+1] += 1;
-				field[i+1][j-1] += 1;
-				field[i+1][j] += 1;
-				field[i+1][j+1] += 1;
+                if (i > 0) {
+                    field[i-1][j] += 1;
+                    if (j < 3) {
+                        field[i-1][j+1] += 1;
+                    }
+                    if (j > 0) {
+                        field[i-1][j-1] += 1;
+                    }
+                }
+                if (j > 0) {
+                    field[i][j-1] += 1;
+                    if (i < 3) {
+                        field[i+1][j-1] += 1;
+                    }
+                }
+                if (j < 3) {
+                    field[i][j+1] += 1;
+                    if (i < 3) {
+                        field[i+1][j+1] += 1;
+                    }
+                }
+                if (i < 3) {
+                    field[i+1][j] += 1;
+                }
+
 			}
 	}}	
 	
@@ -56,29 +112,34 @@
 	item.addEventListener( "click" ,  cell_click);
 	item.addEventListener("contextmenu", cell_right_click);
 
-    if  (arr_cells[index] == 0) {
+    if  (arr_cells[index] === 0) {
         item.className = "near0 close";
-        //item.style.backgroundImage =  "url(1.png)";
+        //item.style.backgroundImage =  "url(0.png)";
     }
 
-	if  (arr_cells[index] == 1) {
+	if  (arr_cells[index] === 1) {
 		item.className = "near1 close";
 		//item.style.backgroundImage =  "url(1.png)";
 	}
 	
-	if  (arr_cells[index] == 2) {
+	if  (arr_cells[index] === 2) {
         item.className = "near2 close";
         //item.style.backgroundImage =  "url(2.png)";
     }
 
-    if  (arr_cells[index] == 3) {
+    if  (arr_cells[index] === 3) {
         item.className = "near3 close";
-        //item.style.backgroundImage =  "url(2.png)";
+        //item.style.backgroundImage =  "url(3.png)";
+    }
+
+    if  (arr_cells[index] === 4) {
+        item.className = "near4 close";
+        //item.style.backgroundImage =  "url(4.png)";
     }
 	
 	if  (arr_cells[index] > 8) {
         item.className = "bomb close";
-		//item.style.backgroundImage =  "url(index.jpeg)";
+		//item.style.backgroundImage =  "url(bomb.jpeg)";
 	}
 	
 	index++;
