@@ -1,0 +1,2 @@
+# Minesweeper
+JavaScript game
